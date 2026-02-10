@@ -29,5 +29,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Deliveri-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: itplus-Release-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
