@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IT Plus App</title>
+    <style>
+        /* RESET & BASE */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Aucun défilement */
+            background-color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* L'IFRAME (LE SITE WEB) */
+        #app-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        /* ÉCRAN D'ERREUR (PAS DE CONNEXION) */
+        #offline-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #111827; /* Fond sombre */
+            color: white;
+            z-index: 9999; /* Au-dessus de tout */
+            display: none; /* Caché par défaut */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Design de l'icône d'avertissement */
+        .warning-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #ef4444; /* Rouge */
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #9ca3af;
+            max-width: 400px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* Bouton de rechargement (optionnel mais utile) */
+        .reload-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .reload-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .close-hint {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- L'application (iframe) -->
+    <iframe id="app-frame" src="https://itplus-app.netlify.app" allowfullscreen></iframe>
+
+    <!-- L'écran d'erreur (visible seulement si offline) -->
+    <div id="offline-screen">
+        <div class="warning-icon">⚠️</div>
+        <div class="title">Pas de connexion Internet</div>
+        <div class="message">
+            Une connexion est requise pour accéder à cette application.<br>
+            Vérifiez votre réseau ou fermez le l'app.
+        </div>
+        <button class="reload-btn" onclick="window.location.reload()">Réessayer</button>
+        <div class="close-hint">Appuyez sur Réessayer une fois le réseau rétabli</div>
+    </div>
+
+    <script>
+        // Sélection des éléments
+        const iframe = document.getElementById('app-frame');
+        const offlineScreen = document.getElementById('offline-screen');
+
+        /**
+         * Met à jour l'affichage en fonction de l'état de la connexion
+         */
+        function updateConnectionStatus() {
+            if (navigator.onLine) {
+                // SI CONNECTÉ : On affiche l'iframe, on cache l'erreur
+                iframe.style.display = 'block';
+                offlineScreen.style.display = 'none';
+                document.title = "IT Plus App";
+            } else {
+                // SI DÉCONNECTÉ : On cache l'iframe, on affiche l'erreur
+                iframe.style.display = 'none';
+                offlineScreen.style.display = 'flex';
+                document.title = "Hors connexion";
+            }
+        }
+
+        // 1. Vérification au chargement de la page
+        window.addEventListener('load', updateConnectionStatus);
+
+        // 2. Écouteurs d'événements pour détecter le changement de réseau en temps réel
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+    </script>
+</body>
+</html>
